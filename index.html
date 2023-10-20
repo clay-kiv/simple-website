@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            margin: 100px auto;
+            width: 200px;
+        }
+
+        .smiley {
+            font-size: 48px;
+            cursor: pointer;
+        }
+
+        .message {
+            font-size: 24px;
+        }
+
+        .jump {
+            animation: jump 0.5s linear;
+        }
+
+        @keyframes jump {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-40px); }
+            100% { transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="smiley" onclick="jumpSmiley()">&#x1F604;</div>
+        <div class="message">Hello, how are you feeling today?</div>
+    </div>
+
+    <script>
+        function jumpSmiley() {
+            const smiley = document.querySelector('.smiley');
+            smiley.classList.add('jump');
+            setTimeout(() => {
+                smiley.classList.remove('jump');
+            }, 500);
+        }
+    </script>
+</body>
+</html>

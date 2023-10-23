@@ -26,6 +26,7 @@ pipeline {
                 echo "+=========== Start Building Image ===========+"
                 dir ('docker') {
                     sh '''
+                    sed -i "s/1.0.$BUILD_NUMBER/BUILD_NUMBER/g" index.html
                     docker build -t claykiv/simple-website:1.0.$BUILD_NUMBER .
                     '''
                 }

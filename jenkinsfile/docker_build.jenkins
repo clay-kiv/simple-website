@@ -33,7 +33,7 @@ pipeline {
         }
         stage ("RUN Docker Image") {
             steps {
-                echo "=========== Start Building Image ==========="
+                echo "+=========== Start Building Image ===========+"
                 dir ('docker') {
                     sh '''
                     docker stop simple-website &> /dev/null

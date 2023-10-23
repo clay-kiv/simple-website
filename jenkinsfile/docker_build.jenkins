@@ -15,7 +15,7 @@ pipeline {
             steps {
                 echo "=========== Start Building Image ==========="
                 dir ('docker') {
-                    sh 'docker build . '
+                    sh 'docker build -t simple-website:1.0.$BUILD_NUMBER . '
                 }
             }
         }

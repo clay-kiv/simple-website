@@ -7,12 +7,12 @@ pipeline {
         label 'master'
     }
     options {
-        buildDiscarder(logRotator(numToKeepSTR: '10', artifactNubToKeepStr: '10'))
+        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
         timestemps()
     }
     stages {
-        stage ("create docker image"){
-            steps{
+        stage ("create docker image") {
+            steps {
                 echo "=========== Start Building Image ==========="
                 dir (docker) {
                     sh 'docker build . '

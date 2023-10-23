@@ -1,6 +1,6 @@
 #!grooby
 // Run docker build
-properties([disableConcurrentBuild()])
+properties([disableConcurrentBuilds()])
 
 pipeline {
     agent {

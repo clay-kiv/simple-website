@@ -1,0 +1,23 @@
+#!grooby
+// Run docker build
+properties([disableConcurrentBuild()])
+
+pipeline {
+    agent {
+        label 'main'
+    }
+    options {
+        buildDiscarder(logRotator(numToKeepSTR: '10', artifactNubToKeepStr: '10'))
+        timestemps()
+    }
+    stages {
+        stage ("create docker image"){
+            steps{
+                echo "=========== Start Building Image ==========="
+                dir (docker/simple-website) {
+                    sh 'docker build . '
+                }
+            }
+        }
+    }
+}

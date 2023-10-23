@@ -37,7 +37,7 @@ pipeline {
                 dir ('docker') {
                     sh '''
                     docker stop simple-website &> /dev/null
-                    sleep 3
+                    sleep 7
                     docker run --rm -d -p 80:80 --name simple-website claykiv/simple-website:1.0.$BUILD_NUMBER
                     '''
                 }

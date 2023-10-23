@@ -29,6 +29,14 @@ pipeline {
                 }
             }
         }
+        stage ("RUN Docker Image") {
+            steps {
+                echo "=========== Start Building Image ==========="
+                dir ('docker') {
+                    sh 'docker run -d -p 80:80 --name simple-website simple-website'
+                }
+            }
+        }
         stage ("Docker PUSH") {
             steps {
                 echo "=========== Start Building Image ==========="

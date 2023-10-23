@@ -27,7 +27,7 @@ pipeline {
                 dir ('docker') {
                     sh '''
                     docker build -t claykiv/simple-website:1.0.$BUILD_NUMBER . 
-                    docker stop simple-website &> /dev/null
+                    docker stop simple-website  &> /dev/null
                     '''
                 }
             }

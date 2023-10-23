@@ -26,8 +26,7 @@ pipeline {
                 echo "=========== Start Building Image ==========="
                 dir ('docker') {
                     sh '''
-                    docker build -t claykiv/simple-website:1.0.$BUILD_NUMBER . 
-                    docker stop simple-website  &> /dev/null
+                    docker build -t claykiv/simple-website:1.0.$BUILD_NUMBER .
                     '''
                 }
             }
@@ -36,7 +35,10 @@ pipeline {
             steps {
                 echo "=========== Start Building Image ==========="
                 dir ('docker') {
-                    sh 'docker run --rm -d -p 80:80 --name simple-website claykiv/simple-website:1.0.$BUILD_NUMBER'
+                    sh '''
+                    docker stop simple-website &> /dev/null
+                    docker run --rm -d -p 80:80 --name simple-website claykiv/simple-website:1.0.$BUILD_NUMBER
+                    '''
                 }
             }
         }

@@ -11,11 +11,29 @@ pipeline {
         timestamps()
     }
     stages {
-        stage ("create docker image") {
+        stage ("docker login") {
+            steps {
+                echo "=========== Docker login ==========="
+                withCredentials([usernamePassword(credentialsId: 'claykiv', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]){
+                sh """
+                docker login -u $USERNAME -p $PASSWORD
+                """
+                }
+            }
+        }
+        stage ("Create Docker Image") {
             steps {
                 echo "=========== Start Building Image ==========="
                 dir ('docker') {
                     sh 'docker build -t simple-website:1.0.$BUILD_NUMBER . '
+                }
+            }
+        }
+        stage ("Docker PUSH") {
+            steps {
+                echo "=========== Start Building Image ==========="
+                dir ('docker') {
+                    sh 'docker push claykiv/simple-website:1.0.$BUILD_NUMBER '
                 }
             }
         }

@@ -23,7 +23,7 @@ pipeline {
         }
         stage ("Create Docker Image") {
             steps {
-                echo "=========== Start Building Image ==========="
+                echo "+=========== Start Building Image ===========+"
                 dir ('docker') {
                     sh '''
                     docker build -t claykiv/simple-website:1.0.$BUILD_NUMBER .

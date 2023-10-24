@@ -76,7 +76,7 @@ pipeline {
                 // Check if container runing on vps 110 VPS
                 containerRunning = sh(script: "ssh $SSH_USR@$SSH_IP 'docker ps | grep -q simple-website'", returnStatus: true)
                 
-            
+            }
         }
     }
 }

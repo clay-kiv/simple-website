@@ -77,10 +77,12 @@ pipeline {
                 script {
                     def sshCommand = "ssh $SSH_USR@$SSH_IP 'docker ps --filter name=simple-website --format \"{{.Names}}\"'"
                     def containerList = sh(script: sshCommand, returnStdout: true).trim()                    
+                
                     if (containerList.isEmpty()) {
                         error("Container is not running. Build failed.")
+                    } else {
+                        echo "Container is running. Build successful."
                     }
-                    
                 }
             }
         }

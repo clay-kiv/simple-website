@@ -74,9 +74,11 @@ pipeline {
                 sleep 30
         
                 // Check if container runing on vps 110 VPS
-                containerRunning = sh(script: "ssh $SSH_USR@$SSH_IP 'docker ps | grep -q simple-website'", returnStatus: true)
+                def containerList = sh(script: "ssh $SSH_USR@$SSH_IP 'docker ps --format \"{{.Names}}\"'", returnStdout: true).trim()
                 
-                if (containerRunning != 0) {
+                if (containerList.contains("simple-website")) {
+                    echo "Container is running."
+                } else {
                     error("Container is not running. Build failed.")
                 }
             }

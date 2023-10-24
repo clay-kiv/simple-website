@@ -76,12 +76,7 @@ pipeline {
                 // Check if container runing on vps 110 VPS
                 script {
                     def sshCommand = "docker ps --filter name=simple-website --format '{{.Names}}'"
-                    def sshResult = sshCommand remote: [
-                        host: SSH_IP,
-                        user: SSH_USR,
-                        port: 22,
-                        command: sshCommand
-                    ]
+                    def sshResult = sh(script: "ssh $SSH_USR@$SSH_IP '${sshCommand}'", returnStatus: true, returnStdout: true)
                     def containerList = sshResult.text.trim()
                     
                     if (containerList.isEmpty()) {

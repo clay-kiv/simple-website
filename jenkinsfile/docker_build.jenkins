@@ -71,7 +71,7 @@ pipeline {
                 """
                 
                 // Waiting 30 seconds for check container if runing.
-                sleep 30
+                sleep 15
         
                 // Check if container runing on vps 110 VPS
                 script {

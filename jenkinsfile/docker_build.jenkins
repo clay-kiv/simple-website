@@ -89,7 +89,7 @@ pipeline {
                     if (containerList.isEmpty()) {
                         error("Container is not running. Build failed.")
                     }
-                
+                }
             }
         }
     }

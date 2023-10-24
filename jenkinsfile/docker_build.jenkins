@@ -52,5 +52,13 @@ pipeline {
                 '''
             }
         }
+        stage ("Docker PULL 110 VPS") {
+            steps {
+                echo "=========== Start Building Image ==========="
+                sh '''
+                ssh root@93.119.104.110 "docker pull claykiv/simple-website:1.0.$BUILD_NUMBER"
+                '''
+            }
+        }
     }
 }

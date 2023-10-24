@@ -74,8 +74,21 @@ pipeline {
                 sleep 30
         
                 // Check if container runing on vps 110 VPS
-                def sshCommand = "ssh $SSH_USR@$SSH_IP 'docker ps --filter name=simple-website --format \"{{.Names}}\"'"
-                def containerList = bat(script: sshCommand, returnStatus: true).trim()
+                script {
+                    def sshCommand = "docker ps --filter name=simple-website --format '{{.Names}}'"
+        
+                    // Utilizați plugin-ul SSH
+                    sshCommand remote: [
+                        host: SSH_IP,
+                        user: SSH_USR,
+                        port: 22,
+                        command: sshCommand
+                    ], failOnError: true, returnStatus: true, returnStdout: true
+                    def containerList = sshCommand.text.trim()
+        
+                    if (containerList.isEmpty()) {
+                        error("Container is not running. Build failed.")
+                    }
                 
             }
         }

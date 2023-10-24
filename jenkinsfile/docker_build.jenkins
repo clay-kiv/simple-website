@@ -69,8 +69,13 @@ pipeline {
                 ssh $SSH_USR@$SSH_IP "docker stop simple-website || true && docker wait simple-website || true"
                 ssh $SSH_USR@$SSH_IP "docker run --rm -d -p 80:80 --name simple-website $DOCKER_IMAGE_TAG"
                 """
+            }
+        }
+        stage ("Check if container runing 110 VPS") {
+            steps {
+                echo "=========== Check Container 110 VPS ==========="
                 
-                // Waiting 30 seconds for check container if runing.
+                // Waiting 15 seconds for check container if runing.
                 sleep 15
         
                 // Check if container runing on vps 110 VPS

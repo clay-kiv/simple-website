@@ -10,6 +10,14 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
         timestamps()
     }
+    environment {
+        // SSH user and IP
+        SSH_IP = "93.119.104.110"
+        SSH_USR = "root"
+        
+        //DOCKER IMAGE TAG
+        DOCKER_IMAGE_TAG = "claykiv/simple-website:1.0.${BUILD_NUMBER}"
+    }
     stages {
         stage ("Docker Login") {
             steps {
@@ -25,40 +33,53 @@ pipeline {
             steps {
                 echo "+=========== Start Building Image ===========+"
                 dir ('docker') {
-                    sh '''
+                    sh """
                     sed -i "s/BUILD_NUMBER/1.0.$BUILD_NUMBER/g" index.html
-                    docker build -t claykiv/simple-website:1.0.$BUILD_NUMBER .
-                    '''
+                    docker build -t $DOCKER_IMAGE_TAG .
+                    """
                 }
             }
         }
-        stage ("RUN Docker Image") {
+        stage("RUN Docker Image") {
             steps {
-                echo "+=========== Start Building Image ===========+"
-                dir ('docker') {
-                    sh '''
-                    docker stop simple-website &> /dev/null
-                    sleep 7
-                    docker run --rm -d -p 80:80 --name simple-website claykiv/simple-website:1.0.$BUILD_NUMBER
-                    '''
+                echo "+=========== RUN Docker Image ===========+"
+                dir('docker') {
+                    // Stop existent container (if exist) and wait to stop.
+                    sh 'docker stop simple-website || true'
+                    sh 'docker wait simple-website || true'
+
+                    // Restart container
+                    sh "docker run --rm -d -p 80:80 --name simple-website $DOCKER_IMAGE_TAG"
                 }
             }
         }
         stage ("Docker PUSH") {
             steps {
                 echo "=========== Start Building Image ==========="
-                sh '''
-                docker push claykiv/simple-website:1.0.$BUILD_NUMBER
-                '''
+                sh """
+                docker push $DOCKER_IMAGE_TAG
+                """
             }
         }
-        stage ("Docker PULL 110 VPS") {
-            steps {
-                echo "=========== Start Building Image ==========="
-                sh '''
-                ssh root@93.119.104.110 "docker pull claykiv/simple-website:1.0.$BUILD_NUMBER"
-                '''
-            }
+stage ("Docker PULL 110 VPS") {
+    steps {
+        echo "=========== Docker PULL 110 VPS ==========="
+        sh """
+        ssh $SSH_USR@$SSH_IP "docker pull $DOCKER_IMAGE_TAG"
+        ssh $SSH_USR@$SSH_IP "docker stop simple-website || true && docker wait simple-website || true"
+        ssh $SSH_USR@$SSH_IP "docker run --rm -d -p 80:80 --name simple-website $DOCKER_IMAGE_TAG"
+        """
+        
+        // Waiting 30 seconds for check container if runing.
+        sleep 30
+
+        // Check if container runing on vps 110 VPS
+        def containerRunning = sh(script: "ssh root@${REMOTE_SERVER_IP} 'docker ps | grep -q simple-website'", returnStatus: true)
+        
+        if (containerRunning != 0) {
+            error("Container is not running. Build failed.")
         }
+    }
+}
     }
 }

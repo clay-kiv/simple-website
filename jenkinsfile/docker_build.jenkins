@@ -61,25 +61,25 @@ pipeline {
                 """
             }
         }
-stage ("Docker PULL 110 VPS") {
-    steps {
-        echo "=========== Docker PULL 110 VPS ==========="
-        sh """
-        ssh $SSH_USR@$SSH_IP "docker pull $DOCKER_IMAGE_TAG"
-        ssh $SSH_USR@$SSH_IP "docker stop simple-website || true && docker wait simple-website || true"
-        ssh $SSH_USR@$SSH_IP "docker run --rm -d -p 80:80 --name simple-website $DOCKER_IMAGE_TAG"
-        """
+        stage ("Docker PULL 110 VPS") {
+            steps {
+                echo "=========== Docker PULL 110 VPS ==========="
+                sh """
+                ssh $SSH_USR@$SSH_IP "docker pull $DOCKER_IMAGE_TAG"
+                ssh $SSH_USR@$SSH_IP "docker stop simple-website || true && docker wait simple-website || true"
+                ssh $SSH_USR@$SSH_IP "docker run --rm -d -p 80:80 --name simple-website $DOCKER_IMAGE_TAG"
+                """
+                
+                // Waiting 30 seconds for check container if runing.
+                sleep 30
         
-        // Waiting 30 seconds for check container if runing.
-        sleep 30
-
-        // Check if container runing on vps 110 VPS
-        containerRunning = sh(script: "ssh ${SSH_USR}@${SSH_IP} 'docker ps | grep -q simple-website'", returnStatus: true)
-        
-        if (containerRunning != 0) {
-            error("Container is not running. Build failed.")
+                // Check if container runing on vps 110 VPS
+                containerRunning = sh(script: "ssh ${SSH_USR}@${SSH_IP} 'docker ps | grep -q simple-website'", returnStatus: true)
+                
+                if (containerRunning != 0) {
+                    error("Container is not running. Build failed.")
+                }
+            }
         }
-    }
-}
     }
 }
